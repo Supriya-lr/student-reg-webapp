@@ -1,5 +1,8 @@
 node {
     def mavenHome = tool name: 'Maven-3.9.10', type: 'maven'
+
+    try{
+
     
     stage("Git Clone") {
         sh "echo Git Clone"
@@ -35,4 +38,23 @@ node {
                   ssh -o StrictHostKeyChecking=no ec2-user@172.31.82.141 sudo systemctl start tomcat"""
         }
     }
+}    catch (err) {
+         echo "An error occured: ${e.getMessage()}"
+         currentBuild.result = 'FAILURE'
+     } finally {
+          def buildStatus = currentBuild.result ?: 'SUCCESS'
+          sendEmail(
+              "${env.JOB_NAME} - ${env.BUILD_NUMBER} - Build ${buildStatus}",
+              "Build ${buildStatus}. Please check the console output at ${env.BUILD_URL}",
+               'supriya.lr23@gmail.com' )
+    }
+}
+
+def sendEmail(String subject, String body, String recipient) {
+    emailext(
+        subject: subject,
+        body: body,
+        to: recipient,
+        mimeType: 'text/html'
+    )
 }
