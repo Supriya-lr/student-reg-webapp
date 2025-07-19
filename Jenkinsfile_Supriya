@@ -1,0 +1,37 @@
+node {
+    def mavenHome = tool name: 'Maven-3.9.10', type: 'maven'
+    
+    stage("Git Clone") {
+        sh "echo Git Clone"
+        git branch: 'development', credentialsId: 'GitHubCred', url: 'https://github.com/Supriya-lr/student-reg-webapp.git'
+    }
+    
+    stage("Maven Build") {
+        sh "${mavenHome}/bin/mvn clean verify sonar:sonar"
+    }
+    
+     stage("Maven Build") {
+        sh "${mavenHome}/bin/mvn clean deploy"
+    }
+    
+    stage("Stop Tomcat Process"){
+        sshagent(['TomcatServer']){
+            sh """echo Stopping Tomcat Process
+                  ssh -o StrictHostKeyChecking=no ec2-user@172.31.82.141 sudo systemctl stop tomcat
+                  sleep 10"""
+        }
+    }
+    
+    stage("Deploy WAR File to Tomcat"){
+        sshagent(['TomcatServer']) {
+            sh "scp -o StrictHostKeyChecking=no target/student-reg-webapp.war ec2-user@172.31.82.141:/opt/tomcat/webapps/student-reg-webapp.war"
+        }    
+    }
+    
+    stage("Start Tomcat Process"){
+        sshagent(['TomcatServer']){
+            sh """echo Starting Tomcat Process
+                  ssh -o StrictHostKeyChecking=no ec2-user@172.31.82.141 sudo systemctl start tomcat"""
+        }
+    }
+}
