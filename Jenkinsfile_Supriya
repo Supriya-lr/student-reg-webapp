@@ -6,7 +6,8 @@ node {
         git branch: 'development', credentialsId: 'GitHubCred', url: 'https://github.com/Supriya-lr/student-reg-webapp.git'
     }
     
-    stage("Maven Build") {
+    stage("Maven Verify and Sonar Scan") {
+        sh "${mavenHome}/bin/mvn clean package"
         sh "${mavenHome}/bin/mvn clean verify sonar:sonar"
     }
     
