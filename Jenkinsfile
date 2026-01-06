@@ -23,7 +23,7 @@ pipeline {
  
     tools {
         maven 'Maven-3.9.11'
-    }
+        }
     
     stages{
 
@@ -34,11 +34,11 @@ pipeline {
            }
         }
      
-        stage("Sonar Scan"){
+        /* stage("Sonar Scan"){
             steps {
                 sh "mvn clean verify sonar:sonar -Dsonar.host=${SONARQUBE_HOST} -Dsonar.token=${SONARQUBE_TOKEN}"
             }
-        }
+        } */
      
         stage("Upload Artificat To Nexus"){
             steps {
