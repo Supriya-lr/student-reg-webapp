@@ -13,11 +13,11 @@ pipeline {
     }
  
     environment {
-        
-        SONARQUBE_HOST = "http://172.31.8.134:9000"
+         
+        SONARQUBE_HOST = "http://172.31.22.177:9000"
         SONARQUBE_TOKEN = credentials('SonarQubeToken')
         tomcatserverSSHUserName = "ec2-user"
-        tomcatSystemIP = "172.31.19.130"
+        tomcatSystemIP = "172.31.22.220"
         
     }
  
@@ -46,7 +46,7 @@ pipeline {
             }
         }
      
-        stage("Deploy War File To Tomcat"){
+        stage("Deploy to Dev server"){
             
             when {
                 expression { env.BRANCH_NAME ==  "development" }
