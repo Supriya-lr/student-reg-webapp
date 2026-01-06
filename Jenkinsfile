@@ -14,7 +14,7 @@ pipeline {
  
     environment {
          
-        SONARQUBE_HOST = "http://172.31.22.177:9000"
+        SONARQUBE_HOST = "http://54.219.15.26:9000"
         SONARQUBE_TOKEN = credentials('SonarQubeToken')
         tomcatserverSSHUserName = "ec2-user"
         tomcatSystemIP = "172.31.22.220"
@@ -34,20 +34,20 @@ pipeline {
            }
         }
      
-        /* stage("Sonar Scan"){
+        stage("Sonar Scan"){
             steps {
                 sh "mvn clean verify sonar:sonar -Dsonar.host=${SONARQUBE_HOST} -Dsonar.token=${SONARQUBE_TOKEN}"
             }
-        } */
+        } 
      
         stage("Upload Artificat To Nexus"){
             steps {
                 sh "mvn clean deploy"
             }
         }
-     
-        stage("Deploy to Dev server"){
-            
+
+        stage("Deploy to Dev server") {
+
             when {
                 expression { env.BRANCH_NAME ==  "development" }
             }
